@@ -5,29 +5,44 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Guillermo Alcuaz Temiño
+ * @author Pablo Marcos Bravo
+ * @since JDK 11
+ * @version 2.0
+ */
+
 public class ActividadEntradaPuerta implements Runnable{
+	private static final int NUMENTRADAS = 20;
+	private String puerta;
+	private IParque parque;
+	
+	/**
+	* Constructor
+	* 
+	* @param puerta
+	* @param parque
+	*/
+	public ActividadEntradaPuerta(String puerta, IParque parque) {
+		this.puerta = puerta;
+		this.parque = parque;
+	}
 
-		private static final int NUMENTRADAS = 20;
-		private String puerta;
-		private IParque parque;
-
-		public ActividadEntradaPuerta(String puerta, IParque parque) {
-			this.puerta = puerta;
-			this.parque = parque;
-		}
-
-		@Override
-		public void run() {
-			for (int i = 0; i < NUMENTRADAS; i ++) {
-				try {
-					parque.entrarAlParque(puerta);
-					TimeUnit.MILLISECONDS.sleep(new Random().nextInt(5)*1000);
-				} catch (InterruptedException e) {
-					Logger.getGlobal().log(Level.INFO, "Entrada interrumpida");
-					Logger.getGlobal().log(Level.INFO, e.toString());
-					return;
-				}
+	/**
+	* 
+	*/
+	@Override
+	public void run() {
+		for (int i = 0; i < NUMENTRADAS; i ++) {
+			try {
+				parque.entrarAlParque(puerta);
+				TimeUnit.MILLISECONDS.sleep(new Random().nextInt(5)*1000);
+			} catch (InterruptedException e) {
+				Logger.getGlobal().log(Level.INFO, "Entrada interrumpida");
+				Logger.getGlobal().log(Level.INFO, e.toString());
+				return;
 			}
 		}
-
+	}
 }
