@@ -13,43 +13,41 @@ import java.util.Hashtable;
 
 public class Parque implements IParque{
 
-
+	private static final int NUMENTRADAS = 20;
 	// TODO 
 	private int contadorPersonasTotales;
 	private Hashtable<String, Integer> contadoresPersonasPuerta;
 	
 	
-	public Parque() {	// TODO
+	public Parque() {
 		contadorPersonasTotales = 0;
 		contadoresPersonasPuerta = new Hashtable<String, Integer>();
-		// TODO
 	}
 
 
 	@Override
-	public void entrarAlParque(String puerta){		// TODO
+	public void entrarAlParque(String puerta){		
+		try {
+			comprobarAntesDeEntrar();
+		}catch(InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		// Si no hay entradas por esa puerta, inicializamos
 		if (contadoresPersonasPuerta.get(puerta) == null){
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
 		
-		// TODO
-				
-		
 		// Aumentamos el contador total y el individual
 		contadorPersonasTotales++;		
 		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)+1);
 		
 		// Imprimimos el estado del parque
-		imprimirInfo(puerta, "Entrada");
-		
-		// TODO
-		
-		
-		// TODO
-		
+		imprimirInfo(puerta, "Entrada");		
+		checkInvariante();
+		notify();		
 	}
+	
 	public synchronized void salirDelParque(String puerta) {
 
 		try {
@@ -65,10 +63,8 @@ public class Parque implements IParque{
 		contadorPersonasTotales--;
 		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta) - 1);
 
-		imprimirInfo(puerta, "Salida");
-		
-		checkInvariante();
-		
+		imprimirInfo(puerta, "Salida");		
+		checkInvariante();		
 		notify();
 	}
 	
@@ -99,10 +95,10 @@ public class Parque implements IParque{
 		// TODO
 	}
 
-	protected void comprobarAntesDeEntrar(){	// TODO
-		//
-		// TODO
-		//
+	protected void comprobarAntesDeEntrar() throws InterruptedException{	// TODO
+		while(contadorPersonasTotales == NUMENTRADAS) {
+			wait();
+		}
 	}
 
 	protected void comprobarAntesDeSalir() throws InterruptedException{		// TODO
