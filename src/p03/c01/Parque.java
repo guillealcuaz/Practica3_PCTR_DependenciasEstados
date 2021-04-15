@@ -118,15 +118,20 @@ public class Parque implements IParque{
 		assert contadorPersonasTotales >= 0 : "INV: No hay valores negativos";
 	}
 
-	
+	/**
+	 * Metodo que comprueba que la persona pueda entrar
+	 * @throws InterruptedException
+	 */
 	protected synchronized void comprobarAntesDeEntrar() throws InterruptedException{	
-		while(contadorPersonasTotales == Max_personas) {
-			
+		while(contadorPersonasTotales == Max_personas) {			
 			wait();
 		}
 	}
 
-	
+	/**
+	 * Metodo que comprueba que la persona pueda salir
+	 * @throws InterruptedException
+	 */
 	protected synchronized void comprobarAntesDeSalir() throws InterruptedException{		
 		while(contadorPersonasTotales == 0) {
 			wait();
