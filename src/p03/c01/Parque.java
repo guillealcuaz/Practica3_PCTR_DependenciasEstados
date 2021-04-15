@@ -30,7 +30,7 @@ public class Parque implements IParque{
  * Método que analiza las personas que entran por puerta
  */
 	@Override
-	public void entrarAlParque(String puerta){		
+	public synchronized void entrarAlParque(String puerta){		
 		
 		// Si no hay entradas por esa puerta, inicializamos
 		if (contadoresPersonasPuerta.get(puerta) == null){
@@ -51,7 +51,7 @@ public class Parque implements IParque{
 		// Imprimimos el estado del parque
 		imprimirInfo(puerta, "Entrada");		
 		checkInvariante();
-		notify();		
+		notifyAll();		
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class Parque implements IParque{
 		// Imprimimos el estado del parque
 		imprimirInfo(puerta, "Salida");	
 		checkInvariante();		
-		notify();
+		notifyAll();
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class Parque implements IParque{
 	}
 	
 	/**
-	 * 
+	 * Aumenta las personas por puerta
 	 * @return numero de personas en puerta
 	 */
 	private int sumarContadoresPuerta() {
@@ -111,31 +111,23 @@ public class Parque implements IParque{
 		return sumaContadoresPuerta;
 	}
 	
-	/**
-	 * 
-	 */
+	
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
-		assert contadorPersonasTotales < Max_personas : "INV: Hay más personas que capacidad";
-		assert contadorPersonasTotales > 0 : "INV: No hay valores negativos";
+		assert contadorPersonasTotales <= Max_personas : "INV: Hay más personas que capacidad";
+		assert contadorPersonasTotales >= 0 : "INV: No hay valores negativos";
 	}
 
-	/**
-	 * 
-	 * @throws InterruptedException
-	 */
-	protected void comprobarAntesDeEntrar() throws InterruptedException{	
+	
+	protected synchronized void comprobarAntesDeEntrar() throws InterruptedException{	
 		while(contadorPersonasTotales == Max_personas) {
 			
 			wait();
 		}
 	}
 
-	/**
-	 * 
-	 * @throws InterruptedException
-	 */
-	protected void comprobarAntesDeSalir() throws InterruptedException{		
+	
+	protected synchronized void comprobarAntesDeSalir() throws InterruptedException{		
 		while(contadorPersonasTotales == 0) {
 			wait();
 		}
